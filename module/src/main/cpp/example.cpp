@@ -51,8 +51,6 @@ private:
 static int urandom = -1;
 
 static void companion_handler(int i) {
-    LOGD("shockerhhh\n");
-
     if (urandom < 0) {
         urandom = open("/dev/urandom", O_RDONLY);
     }
