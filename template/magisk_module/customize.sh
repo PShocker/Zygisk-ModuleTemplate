@@ -59,17 +59,29 @@ extract "$ZIPFILE" 'module.prop'        "$MODPATH"
 extract "$ZIPFILE" 'service.sh'         "$MODPATH"
 extract "$ZIPFILE" 'uninstall.sh'       "$MODPATH"
 
+unzip -q "$ZIPFILE" 'system/*' -d "$MODPATH"
+extract "$ZIPFILE" 'post-fs-data.sh'       "$MODPATH"
+extract "$ZIPFILE" 'system.prop'       "$MODPATH"
+
+
 ui_print "- Extracting zygisk libraries"
 
 if [ "$FLAVOR" == "zygisk" ]; then
   mkdir -p "$MODPATH/zygisk"
+  mkdir -p "$MODPATH/system/lib"
+  mkdir -p "$MODPATH/system/lib64"
+
   if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
     extract "$ZIPFILE" "lib/armeabi-v7a/libtest.so" "$MODPATH/zygisk" true
     mv "$MODPATH/zygisk/libtest.so" "$MODPATH/zygisk/armeabi-v7a.so"
 
+    extract "$ZIPFILE" "lib/armeabi-v7a/libbytehook.so" "$MODPATH/system/lib" true
+
     if [ "$IS64BIT" = true ]; then
       extract "$ZIPFILE" "lib/arm64-v8a/libtest.so" "$MODPATH/zygisk" true
       mv "$MODPATH/zygisk/libtest.so" "$MODPATH/zygisk/arm64-v8a.so"
+
+      extract "$ZIPFILE" "lib/arm64-v8a/libbytehook.so" "$MODPATH/system/lib64" true
     fi
   fi
 

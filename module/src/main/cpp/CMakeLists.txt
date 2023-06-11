@@ -32,10 +32,16 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LINKER_FLAGS}")
 
 include_directories(include)
 
-add_library(${MODULE_NAME} SHARED example.cpp zygisk.hpp)
+add_library(${MODULE_NAME} SHARED example.cpp hooktest.cpp zygisk.hpp)
 target_link_libraries(${MODULE_NAME}  log)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
             COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}.so")
 endif ()
+
+
+
+find_package(bytehook REQUIRED CONFIG)
+
+target_link_libraries(${MODULE_NAME} bytehook::bytehook)

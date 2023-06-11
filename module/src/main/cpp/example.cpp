@@ -2,14 +2,15 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <android/log.h>
+#include <string.h>
 
 #include "zygisk.hpp"
+#include "all.h"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
 using zygisk::ServerSpecializeArgs;
 
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "Magisk-hexl", __VA_ARGS__)
 
 class MyModule : public zygisk::ModuleBase {
 public:
@@ -40,10 +41,13 @@ private:
         int fd = api->connectCompanion();
         read(fd, &r, sizeof(r));
         close(fd);
-        LOGD("example: process=[%s], r=[%u]\n", process, r);
-
-        // Since we do not hook any functions, we should let Zygisk dlclose ourselves
-        api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
+//        LOGD("example: process=[%s], r=[%u]\n", process, r);
+        if (strstr("com.hexl.lessontest", process)){
+            my_hook();
+        } else{
+            // Since we do not hook any functions, we should let Zygisk dlclose ourselves
+            api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
+        }
     }
 
 };
@@ -56,7 +60,7 @@ static void companion_handler(int i) {
     }
     unsigned r;
     read(urandom, &r, sizeof(r));
-    LOGD("example: companion r=[%u]\n", r);
+//    LOGD("example: companion r=[%u]\n", r);
     write(i, &r, sizeof(r));
 }
 

@@ -19,9 +19,12 @@ android {
                 arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
             }
         }
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
     }
     buildFeatures {
-        prefab false
+        prefab true
     }
     externalNativeBuild {
         cmake {
@@ -30,6 +33,10 @@ android {
         }
     }
     ndkVersion '23.1.7779620'
+}
+
+dependencies {
+    implementation 'com.bytedance:bytehook:1.0.8'
 }
 
 afterEvaluate {
