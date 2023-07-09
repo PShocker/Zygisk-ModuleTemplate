@@ -43,7 +43,8 @@ private:
         close(fd);
 //        LOGD("example: process=[%s], r=[%u]\n", process, r);
         if (strstr("com.hexl.lessontest", process)){
-            my_hook();
+            char* package_name = const_cast<char *>(process);
+            my_hook(package_name);
         } else{
             // Since we do not hook any functions, we should let Zygisk dlclose ourselves
             api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
