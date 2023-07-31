@@ -12,3 +12,5 @@
 .cxx
 build
 /out
+out
+*gumjs.a

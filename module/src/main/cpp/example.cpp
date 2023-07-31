@@ -6,6 +6,7 @@
 
 #include "zygisk.hpp"
 #include "all.h"
+#include "frida.h"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
@@ -19,7 +20,7 @@ public:
         this->env = env;
     }
 
-    void preAppSpecialize(AppSpecializeArgs *args) override {
+    void postAppSpecialize(const AppSpecializeArgs *args) override {
         // Use JNI to fetch our process name
         const char *process = env->GetStringUTFChars(args->nice_name, nullptr);
         preSpecialize(process);
@@ -43,6 +44,8 @@ private:
         close(fd);
 //        LOGD("example: process=[%s], r=[%u]\n", process, r);
         if (strstr("com.hexl.lessontest", process)){
+            startHook("/data/local/tmp/hook.js");
+
             char* package_name = const_cast<char *>(process);
             my_hook(package_name);
         } else{
