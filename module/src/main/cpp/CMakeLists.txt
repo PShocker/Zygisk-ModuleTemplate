@@ -30,9 +30,11 @@ set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${LINKER_FLAGS}")
 
 # find_package(REQUIRED CONFIG)
 
-include_directories(include)
+include_directories(include dlfc)
 
-add_library(${MODULE_NAME} SHARED example.cpp frida-gumjs-example.cpp hooktest.cpp zygisk.hpp)
+#add_library(${MODULE_NAME} SHARED example.cpp frida-gumjs-example.cpp hooktest.cpp zygisk.hpp)
+add_library(${MODULE_NAME} SHARED example.cpp dlfc/dlfcn_nougat.cpp dlfc/dlfcn_compat.cpp pine.cpp hooktest.cpp zygisk.hpp)
+
 target_link_libraries(${MODULE_NAME}  log)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -43,11 +45,12 @@ endif ()
 find_package(bytehook REQUIRED CONFIG)
 
 
-
-add_library(gumjs STATIC IMPORTED)
-set_target_properties(gumjs
-        PROPERTIES IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/../../libs/${ANDROID_ABI}/libfrida-gumjs.a)
-
-
-target_link_libraries(${MODULE_NAME} gumjs bytehook::bytehook)
+#
+#add_library(gumjs STATIC IMPORTED)
+#set_target_properties(gumjs
+#        PROPERTIES IMPORTED_LOCATION
+#        ${CMAKE_SOURCE_DIR}/../../libs/${ANDROID_ABI}/libfrida-gumjs.a)
+#
+#
+#target_link_libraries(${MODULE_NAME} gumjs bytehook::bytehook)
+target_link_libraries(${MODULE_NAME} bytehook::bytehook)

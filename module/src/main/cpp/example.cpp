@@ -7,6 +7,7 @@
 #include "zygisk.hpp"
 #include "all.h"
 #include "frida.h"
+#include "pine.h"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
@@ -36,6 +37,18 @@ private:
     JNIEnv *env;
 
     void preSpecialize(const char *process) {
+        LOGD("pine_start, %s", process);
+        bool start_result;
+        if(strstr("system_server", process) || strstr(process, "com.android") ||
+        strstr(process, "com.google") || strstr(process, "com.qualcomm") ||
+        strstr(process, "android.process")){
+//            start_result = pine_start(env, true);
+        } else{
+//            setDebuggable(false);
+            start_result = pine_start(env, false);
+        }
+        LOGD("pine_start result: %d , %s", start_result, process);
+
         // Demonstrate connecting to to companion process
         // We ask the companion for a random number
         unsigned r = 0;
@@ -44,10 +57,10 @@ private:
         close(fd);
 //        LOGD("example: process=[%s], r=[%u]\n", process, r);
         if (strstr("com.hexl.lessontest", process)){
-            startHook("/data/local/tmp/hook.js");
+//            startHook("/data/local/tmp/hook.js");
 
             char* package_name = const_cast<char *>(process);
-            my_hook(package_name);
+//            my_hook(package_name);
         } else{
             // Since we do not hook any functions, we should let Zygisk dlclose ourselves
             api->setOption(zygisk::Option::DLCLOSE_MODULE_LIBRARY);
